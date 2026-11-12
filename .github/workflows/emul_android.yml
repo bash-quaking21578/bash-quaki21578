@@ -1,8 +1,10 @@
+
 name: APK Auto Upload 8h
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: '0 */8 * * *'
@@ -10,24 +12,30 @@ on:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
-      - name: 📥 Récupérer le code du dépôt
+      - name: Recuperer le code
         uses: actions/checkout@v4
 
-      - name: 🐍 Installer Python
+      - name: Installer Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # Changé de '3.9' à '3.11' (ou '3.10' / '3.12')
+          python-version: '3.11'
 
-      - name: 🌐 Installer Google Chrome
+      - name: Verifier Chrome
         run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          google-chrome --version || chromium --version || true
 
-      - name: 📦 Installer les bibliothèques Python
+      - name: Installer les bibliotheques Python
         run: |
-          pip install --upgrade pip
-          pip install DataRecorder DownloadKit DrissionPage requests
+          python -m pip install --upgrade pip
+          python -m pip install DataRecorder DownloadKit DrissionPage requests
 
-      - name: 🚀 Lancer le script d'upload
-        run: python upload3.py
+      - name: Verifier les installations
+        run: |
+          python -c "import DrissionPage, requests; print('Installations OK')"
+
+      - name: Lancer le script d'upload
+        run: |
+          python -u upload3.py

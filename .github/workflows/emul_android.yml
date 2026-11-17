@@ -38,4 +38,4 @@ jobs:
 
       - name: Lancer le script d'upload
         run: |
-          python -u upload3.py
+          python -u upload4.py
